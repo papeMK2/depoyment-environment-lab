@@ -1,5 +1,5 @@
-    name: WebApp
-    version: 1.0.0
-    description: Deploys an Azure Web App without a data store
-    runner: ARM
-    templatePath: azuredeploy.json
+name: WebApp
+version: 1.0.0
+description: Deploys an Azure Web App without a data store
+runner: ARM
+templatePath: azuredeploy.json
