@@ -5,7 +5,15 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "11220081741432339685"
+      "templateHash": "8453587012562972345"
+    }
+  },
+  "parameters": {
+    "adminPassword": {
+      "type": "secureString"
+    },
+    "adminName": {
+      "type": "secureString"
     }
   },
   "resources": [
@@ -33,6 +41,47 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', 'plan-devbox-papemk2')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2022-02-01-preview",
+      "name": "sql-devbox-papemk2",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "minimalTlsVersion": "1.2",
+        "administratorLogin": "[parameters('adminName')]",
+        "administratorLoginPassword": "[parameters('adminPassword')]",
+        "administrators": {
+          "login": "[parameters('adminName')]",
+          "administratorType": "ActiveDirectory",
+          "azureADOnlyAuthentication": false
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2022-02-01-preview",
+      "name": "[format('{0}/sqldb-devbox-papemk2', 'sql-devbox-papemk2')]",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "sku": {
+        "name": "GP_S_Gen5",
+        "capacity": 1
+      },
+      "properties": {
+        "collation": "Japanese_CI_AS",
+        "catalogCollation": "DATABASE_DEFAULT",
+        "zoneRedundant": false,
+        "readScale": "Disabled",
+        "minCapacity": "[json('0.5')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', 'sql-devbox-papemk2')]"
       ]
     }
   ]
